@@ -26,8 +26,48 @@ document.addEventListener('DOMContentLoaded', () => {
     // Показываем тестовый режим если включен
     if (CONFIG.TEST_MODE) {
         showTestModeNotification();
+        updatePricesForTestMode();
     }
 });
+
+// Обновляем цены на странице для тестового режима
+function updatePricesForTestMode() {
+    // Обновляем цены в карточках тарифов
+    document.querySelectorAll('.pricing-card').forEach(card => {
+        const priceElement = card.querySelector('.price');
+        if (priceElement) {
+            const originalPrice = priceElement.textContent.replace(' ₽', '');
+            priceElement.innerHTML = `
+                ${CONFIG.TEST_PRICE} <span class="currency">₽</span>
+                <span class="original-price">(было ${originalPrice} ₽)</span>
+            `;
+        }
+    });
+    
+    // Добавляем стили для оригинальной цены
+    const style = document.createElement('style');
+    style.textContent = `
+        .original-price {
+            display: block;
+            font-size: 12px;
+            color: #999;
+            text-decoration: line-through;
+            margin-top: 5px;
+        }
+        
+        .test-price-badge {
+            display: inline-block;
+            background: #ff9900;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
 // Инициализация обработчиков событий
 function initEventListeners() {
@@ -35,6 +75,7 @@ function initEventListeners() {
     document.querySelectorAll('.buy-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             selectedPlan = e.currentTarget.dataset.plan;
+            // В тестовом режиме используем тестовую цену
             const price = CONFIG.TEST_MODE ? CONFIG.TEST_PRICE : e.currentTarget.dataset.price;
             openPurchaseModal(selectedPlan, price);
         });
@@ -70,7 +111,7 @@ function showTestModeNotification() {
             <i class="fas fa-flask"></i>
             <div>
                 <strong>🔧 ТЕСТОВЫЙ РЕЖИМ</strong>
-                <p>Оплата не требуется! Для теста цена: ${CONFIG.TEST_PRICE} ₽</p>
+                <p>Все тарифы: ${CONFIG.TEST_PRICE} ₽ (обычно 120-450 ₽)</p>
             </div>
         </div>
     `;
@@ -127,17 +168,27 @@ function showTestModeNotification() {
 // Открытие модалки покупки
 function openPurchaseModal(plan, price) {
     selectedPlan = plan;
+    const planData = CONFIG.PLANS[plan];
     
-    // Обновляем информацию
-    document.getElementById('selectedPlanName').textContent = CONFIG.PLANS[plan].name;
+    // Обновляем информацию в модалке
+    document.getElementById('selectedPlanName').textContent = planData.name;
     
-    // Показываем тестовую цену если включен режим
+    // В тестовом режиме показываем обе цены
     if (CONFIG.TEST_MODE) {
         document.getElementById('selectedPlanPrice').innerHTML = `
-            ${price} ₽ <span class="test-price-badge">ТЕСТ</span>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <span style="font-size: 32px; font-weight: 800; color: #0066ff;">
+                    ${CONFIG.TEST_PRICE} ₽
+                </span>
+                <span style="font-size: 14px; color: #999; text-decoration: line-through;">
+                    Обычная цена: ${planData.price} ₽
+                </span>
+                <span class="test-price-badge">ТЕСТОВАЯ ЦЕНА</span>
+            </div>
         `;
     } else {
-        document.getElementById('selectedPlanPrice').textContent = `${price} ₽`;
+        // Реальный режим
+        document.getElementById('selectedPlanPrice').textContent = `${planData.price} ₽`;
     }
     
     // Сбрасываем поле
@@ -146,7 +197,11 @@ function openPurchaseModal(plan, price) {
     // Обновляем текст кнопки если тестовый режим
     if (CONFIG.TEST_MODE) {
         document.getElementById('submitBtn').innerHTML = `
-            <i class="fas fa-flask"></i> Протестировать покупку
+            <i class="fas fa-flask"></i> Протестировать покупку (${CONFIG.TEST_PRICE} ₽)
+        `;
+    } else {
+        document.getElementById('submitBtn').innerHTML = `
+            <i class="fas fa-arrow-right"></i> Перейти к оплате
         `;
     }
     
@@ -198,13 +253,17 @@ function showTestPaymentSimulation(username, plan, paymentId) {
         <div class="test-payment-content">
             <div class="test-header">
                 <i class="fas fa-flask"></i>
-                <h3>Тестовая оплата</h3>
+                <h3>Тестовая покупка</h3>
+                <p style="color: #666; margin-top: 10px;">
+                    Тестовая цена: <strong>${CONFIG.TEST_PRICE} ₽</strong> 
+                    (реальная цена: ${plan.price} ₽)
+                </p>
             </div>
             
             <div class="test-info">
                 <div class="info-row">
                     <span>Тариф:</span>
-                    <strong>${plan.name}</strong>
+                    <strong>${plan.name} ${plan.badge}</strong>
                 </div>
                 <div class="info-row">
                     <span>Для пользователя:</span>
@@ -212,7 +271,11 @@ function showTestPaymentSimulation(username, plan, paymentId) {
                 </div>
                 <div class="info-row">
                     <span>Тестовая цена:</span>
-                    <strong>${CONFIG.TEST_PRICE} ₽</strong>
+                    <strong style="color: #ff9900;">${CONFIG.TEST_PRICE} ₽</strong>
+                </div>
+                <div class="info-row">
+                    <span>Реальная цена:</span>
+                    <strong>${plan.price} ₽</strong>
                 </div>
                 <div class="info-row">
                     <span>ID транзакции:</span>
@@ -223,12 +286,12 @@ function showTestPaymentSimulation(username, plan, paymentId) {
             <div class="simulation-steps">
                 <div class="step" id="step1">
                     <div class="step-icon">1</div>
-                    <div class="step-text">Симуляция перехода на ЮMoney...</div>
+                    <div class="step-text">Переход на страницу оплаты...</div>
                     <div class="step-loader"></div>
                 </div>
                 <div class="step" id="step2">
                     <div class="step-icon">2</div>
-                    <div class="step-text">Имитация оплаты...</div>
+                    <div class="step-text">Оплата ${CONFIG.TEST_PRICE} ₽...</div>
                     <div class="step-loader"></div>
                 </div>
                 <div class="step" id="step3">
@@ -238,13 +301,15 @@ function showTestPaymentSimulation(username, plan, paymentId) {
                 </div>
                 <div class="step" id="step4">
                     <div class="step-icon">4</div>
-                    <div class="step-text">Выдача статуса в Telegram...</div>
+                    <div class="step-text">Выдача статуса "${plan.badge}"...</div>
                     <div class="step-loader"></div>
                 </div>
             </div>
             
             <div class="test-buttons">
-                <button class="btn-secondary" id="cancelTestBtn">Отмена</button>
+                <button class="btn-secondary" id="cancelTestBtn">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
                 <button class="btn-primary" id="startTestBtn">
                     <i class="fas fa-play"></i> Запустить тест
                 </button>
@@ -412,10 +477,19 @@ function showTestPaymentSimulation(username, plan, paymentId) {
             color: white;
         }
         
+        #startTestBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+        }
+        
         #cancelTestBtn {
             background: white;
             color: #666;
             border: 2px solid #e6f0ff;
+        }
+        
+        #cancelTestBtn:hover {
+            background: #f8faff;
         }
         
         @keyframes fadeIn {
@@ -430,17 +504,6 @@ function showTestPaymentSimulation(username, plan, paymentId) {
         
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-        
-        .test-price-badge {
-            display: inline-block;
-            background: #ff9900;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            margin-left: 8px;
-            vertical-align: middle;
         }
     `;
     document.head.appendChild(style);
@@ -492,9 +555,8 @@ async function startTestSimulation(username, plan, paymentId) {
         
         // Закрываем симуляцию
         const modal = document.querySelector('.test-payment-modal');
-        const style = document.querySelector('style[data-test-style]');
+        const style = document.querySelector('style');
         if (modal) modal.remove();
-        if (style) style.remove();
         
         // Закрываем основную модалку
         closeModal();
@@ -533,10 +595,10 @@ function showTestSuccessModal(username, plan, paymentId) {
             <div class="success-info">
                 <p><strong>В реальном режиме произошло бы:</strong></p>
                 <ul>
-                    <li>Пользователь @${username} перешел бы на страницу оплаты ЮMoney</li>
-                    <li>Оплатил бы ${plan.price} ₽ за статус "${plan.name}"</li>
-                    <li>После оплаты бот выдал бы статус в Telegram группе</li>
-                    <li>Статус отобразился бы как "${plan.badge}"</li>
+                    <li>Пользователь <strong>@${username}</strong> перешел бы на страницу оплаты ЮMoney</li>
+                    <li>Оплатил бы <strong>${plan.price} ₽</strong> за статус "${plan.name}"</li>
+                    <li>После оплаты бот выдал бы статус <strong>${plan.badge}</strong> в Telegram группе</li>
+                    <li>Статус отобразился бы рядом с вашим именем в списке участников</li>
                 </ul>
             </div>
             
@@ -546,12 +608,16 @@ function showTestSuccessModal(username, plan, paymentId) {
                     <code>${paymentId}</code>
                 </div>
                 <div class="data-row">
+                    <span>Тестовая цена:</span>
+                    <strong style="color: #ff9900;">${CONFIG.TEST_PRICE} ₽</strong>
+                </div>
+                <div class="data-row">
                     <span>Реальная цена:</span>
                     <strong>${plan.price} ₽</strong>
                 </div>
                 <div class="data-row">
-                    <span>Тестовая цена:</span>
-                    <strong>${CONFIG.TEST_PRICE} ₽</strong>
+                    <span>Ваш Telegram:</span>
+                    <strong>@${username}</strong>
                 </div>
             </div>
             
@@ -560,13 +626,14 @@ function showTestSuccessModal(username, plan, paymentId) {
                     <i class="fas fa-times"></i> Закрыть
                 </button>
                 <button class="btn-primary" id="disableTestModeBtn">
-                    <i class="fas fa-power-off"></i> Отключить тестовый режим
+                    <i class="fas fa-power-off"></i> Включить реальные платежи
                 </button>
             </div>
             
             <div class="test-note">
                 <i class="fas fa-info-circle"></i>
-                <p>Для реальных покупок поменяйте <code>TEST_MODE: true</code> на <code>TEST_MODE: false</code> в script.js</p>
+                <p><strong>Как включить реальные платежи:</strong><br>
+                В файле <code>script.js</code> измените <code>TEST_MODE: true</code> на <code>TEST_MODE: false</code></p>
             </div>
         </div>
     `;
@@ -688,10 +755,19 @@ function showTestSuccessModal(username, plan, paymentId) {
             color: white;
         }
         
+        #disableTestModeBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 255, 0.3);
+        }
+        
         #closeTestSuccessBtn {
             background: white;
             color: #666;
             border: 2px solid #e6f0ff;
+        }
+        
+        #closeTestSuccessBtn:hover {
+            background: #f8faff;
         }
         
         .test-note {
@@ -734,7 +810,7 @@ function showTestSuccessModal(username, plan, paymentId) {
     });
     
     document.getElementById('disableTestModeBtn').addEventListener('click', () => {
-        alert('Чтобы отключить тестовый режим, измените в файле script.js:\nTEST_MODE: true → TEST_MODE: false');
+        alert('Чтобы включить реальные платежи:\n\n1. Открой файл script.js\n2. Найдите строку: TEST_MODE: true\n3. Измени на: TEST_MODE: false\n4. Сохрани файл\n5. Перезагрузи страницу');
         modal.remove();
         style.remove();
     });
