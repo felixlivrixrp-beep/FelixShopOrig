@@ -955,3 +955,265 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+// Реальная выдача прав в Telegram (добавь в конец script.js)
+async function grantTelegramRights(username, planName) {
+    try {
+        const plan = CONFIG.PLANS[selectedPlan];
+        
+        // 1. Получаем user_id по username (нужен твой бот)
+        const userId = await getTelegramUserId(username);
+        
+        if (!userId) {
+            throw new Error(`Не удалось найти пользователя @${username}. Убедитесь, что пользователь писал боту.`);
+        }
+        
+        // 2. Выдаем права админа (только тэг, без реальных прав)
+        const response = await fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/promoteChatMember`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: CONFIG.TELEGRAM_CHAT_ID,
+                user_id: userId,
+                can_change_info: false,
+                can_delete_messages: false,
+                can_invite_users: false,
+                can_restrict_members: false,
+                can_pin_messages: false,
+                can_promote_members: false,
+                can_manage_chat: false,
+                can_manage_video_chats: false,
+                can_post_stories: false,
+                can_edit_stories: false,
+                can_delete_stories: false,
+                is_anonymous: false
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.ok) {
+            throw new Error(data.description || 'Ошибка Telegram API');
+        }
+        
+        // 3. Устанавливаем кастомный тэг (Premium/VIP/Christmas)
+        await fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/setChatAdministratorCustomTitle`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: CONFIG.TELEGRAM_CHAT_ID,
+                user_id: userId,
+                custom_title: plan.badge
+            })
+        });
+        
+        // 4. Отправляем сообщение пользователю
+        await fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: userId,
+                text: `🎉 Поздравляем! Вы получили статус ${plan.badge} в группе!\n\nВаш новый тэг: ${plan.badge}\nСпасибо за покупку в FelixShop!`,
+                parse_mode: 'HTML'
+            })
+        });
+        
+        return {
+            success: true,
+            message: `Статус ${plan.badge} успешно выдан пользователю @${username}`
+        };
+        
+    } catch (error) {
+        console.error('Ошибка выдачи прав:', error);
+        return {
+            success: false,
+            message: `Ошибка: ${error.message}`
+        };
+    }
+}
+
+// Получение user_id по username
+async function getTelegramUserId(username) {
+    try {
+        // Способ 1: Если пользователь уже писал боту
+        // Нужно хранить user_id в базе данных
+        
+        // Способ 2: Просить пользователя предоставить ID
+        // Через команду /id в боте
+        
+        // Способ 3: Использовать inline-бота
+        // Но это сложнее
+        
+        // Временное решение - просим ввести user_id вручную
+        return await getUserIdFromUser(username);
+        
+    } catch (error) {
+        console.error('Ошибка получения user_id:', error);
+        return null;
+    }
+}
+
+// Запрос user_id у пользователя
+async function getUserIdFromUser(username) {
+    return new Promise((resolve) => {
+        const modal = document.createElement('div');
+        modal.className = 'user-id-modal';
+        modal.innerHTML = `
+            <div class="user-id-content">
+                <h3><i class="fab fa-telegram"></i> Требуется Telegram User ID</h3>
+                <p>Для выдачи статуса нужен ваш Telegram User ID.</p>
+                <p><strong>Как получить ID:</strong></p>
+                <ol>
+                    <li>Напишите боту <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a></li>
+                    <li>Скопируйте цифровой ID</li>
+                    <li>Вставьте его ниже</li>
+                </ol>
+                
+                <div class="form-group">
+                    <label>Ваш Telegram User ID:</label>
+                    <input type="text" id="telegramUserId" placeholder="123456789" maxlength="20">
+                </div>
+                
+                <div class="buttons">
+                    <button class="btn-secondary" id="cancelUserIdBtn">Отмена</button>
+                    <button class="btn-primary" id="submitUserIdBtn">Продолжить</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Стили
+        const style = document.createElement('style');
+        style.textContent = `
+            .user-id-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(10px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2002;
+                padding: 20px;
+                animation: fadeIn 0.3s ease;
+            }
+            
+            .user-id-content {
+                background: white;
+                border-radius: 20px;
+                padding: 30px;
+                max-width: 500px;
+                width: 100%;
+                animation: scaleIn 0.3s ease;
+            }
+            
+            .user-id-content h3 {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 24px;
+                margin-bottom: 15px;
+                color: #1a1a2e;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .user-id-content p {
+                margin-bottom: 15px;
+                color: #666;
+                line-height: 1.5;
+            }
+            
+            .user-id-content ol {
+                margin-left: 20px;
+                margin-bottom: 20px;
+                color: #666;
+            }
+            
+            .user-id-content li {
+                margin-bottom: 8px;
+            }
+            
+            .user-id-content a {
+                color: #0066ff;
+                font-weight: 600;
+                text-decoration: none;
+            }
+            
+            .form-group {
+                margin: 20px 0;
+            }
+            
+            .form-group label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 10px;
+                color: #1a1a2e;
+            }
+            
+            .form-group input {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e6f0ff;
+                border-radius: 10px;
+                font-family: 'Inter', sans-serif;
+                font-size: 16px;
+            }
+            
+            .buttons {
+                display: flex;
+                gap: 15px;
+                margin-top: 25px;
+            }
+            
+            .buttons button {
+                flex: 1;
+                padding: 15px;
+                border-radius: 10px;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: none;
+            }
+            
+            #submitUserIdBtn {
+                background: linear-gradient(135deg, #0066ff 0%, #00b8ff 100%);
+                color: white;
+            }
+            
+            #cancelUserIdBtn {
+                background: white;
+                color: #666;
+                border: 2px solid #e6f0ff;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Обработчики
+        document.getElementById('submitUserIdBtn').addEventListener('click', () => {
+            const userId = document.getElementById('telegramUserId').value.trim();
+            if (userId && /^\d+$/.test(userId)) {
+                modal.remove();
+                style.remove();
+                resolve(userId);
+            } else {
+                alert('Введите корректный Telegram User ID (только цифры)');
+            }
+        });
+        
+        document.getElementById('cancelUserIdBtn').addEventListener('click', () => {
+            modal.remove();
+            style.remove();
+            resolve(null);
+        });
+    });
+}
