@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230066ff%22/><text x=%2250%22 y=%2265%22 font-family=%22Arial%22 font-size=%2240%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22>F</text></svg>">
 </head>
 <body>
     <!-- Шапка -->
@@ -31,62 +30,22 @@
         </div>
     </header>
 
-    <!-- Герой секция -->
+    <!-- Герой -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title">
-                    <span class="gradient-text">Премиум статусы</span><br>
+                    <span class="gradient-text">VIP статусы</span><br>
                     для Telegram групп
                 </h1>
                 <p class="hero-subtitle">
                     Получите особый тэг в Telegram группе!<br>
-                    Статусы Premium, VIP или Christmas с ограниченным временем.
+                    Статусы Premium, VIP или Christmas.
                 </p>
                 <div class="hero-buttons">
                     <a href="#tariffs" class="btn-primary">
-                        <i class="fas fa-shopping-cart"></i> Купить статус
+                        <i class="fas fa-crown"></i> Выбрать статус
                     </a>
-                    <a href="#howto" class="btn-secondary">
-                        <i class="fas fa-play-circle"></i> Как это работает?
-                    </a>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat">
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">тарифа</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">5</div>
-                        <div class="stat-label">минут</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">поддержка</div>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-image">
-                <div class="telegram-demo">
-                    <div class="chat-header">
-                        <i class="fab fa-telegram"></i>
-                        <span>Felix Group</span>
-                        <div class="online-dot"></div>
-                    </div>
-                    <div class="chat-messages">
-                        <div class="message vip">
-                            <div class="sender">👑 VIP User</div>
-                            <div class="text">Я VIP этой группы!</div>
-                        </div>
-                        <div class="message user">
-                            <div class="sender">User</div>
-                            <div class="text">Как получить статус?</div>
-                        </div>
-                        <div class="message bot">
-                            <div class="sender">🤖 FelixBot</div>
-                            <div class="text">Купить на felixshop.github.io</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -95,17 +54,15 @@
     <!-- Тарифы -->
     <section class="tariffs" id="tariffs">
         <div class="container">
-            <h2 class="section-title">Выберите статус</h2>
-            <p class="section-subtitle">Особый тэг в вашем Telegram</p>
+            <h2 class="section-title">Выберите ваш статус</h2>
+            <p class="section-subtitle">Особый тэг в Telegram группе</p>
             
             <div class="pricing-cards">
                 <!-- Premium -->
                 <div class="pricing-card">
-                    <div class="card-header">
-                        <div class="card-badge premium">PREMIUM</div>
-                        <h3>Premium</h3>
-                        <div class="price">120 <span class="currency">₽</span></div>
-                    </div>
+                    <div class="card-badge premium">PREMIUM</div>
+                    <h3>Premium</h3>
+                    <div class="price">120 <span class="currency">₽</span></div>
                     <ul class="features">
                         <li><i class="fas fa-check"></i> Тэг "⭐ Premium"</li>
                         <li><i class="fas fa-check"></i> Админка (без прав)</li>
@@ -120,11 +77,9 @@
                 <!-- VIP -->
                 <div class="pricing-card featured">
                     <div class="popular-badge">🔥 ПОПУЛЯРНОЕ</div>
-                    <div class="card-header">
-                        <div class="card-badge vip">VIP</div>
-                        <h3>VIP</h3>
-                        <div class="price">240 <span class="currency">₽</span></div>
-                    </div>
+                    <div class="card-badge vip">VIP</div>
+                    <h3>VIP</h3>
+                    <div class="price">240 <span class="currency">₽</span></div>
                     <ul class="features">
                         <li><i class="fas fa-check"></i> Тэг "👑 VIP"</li>
                         <li><i class="fas fa-check"></i> Админка (без прав)</li>
@@ -139,14 +94,12 @@
 
                 <!-- Christmas -->
                 <div class="pricing-card">
-                    <div class="card-header">
-                        <div class="card-badge christmas">CHRISTMAS</div>
-                        <h3>Christmas</h3>
-                        <div class="price">450 <span class="currency">₽</span></div>
-                        <div class="time-badge" id="christmasTimer">
-                            <i class="fas fa-clock"></i> <span id="timerText">...</span>
-                        </div>
+                    <div class="card-badge christmas">CHRISTMAS</div>
+                    <div class="time-badge" id="christmasTimer">
+                        <i class="fas fa-clock"></i> <span id="timerText">...</span>
                     </div>
+                    <h3>Christmas</h3>
+                    <div class="price">450 <span class="currency">₽</span></div>
                     <ul class="features">
                         <li><i class="fas fa-check"></i> Тэг "🎄 Christmas"</li>
                         <li><i class="fas fa-check"></i> Админка (без прав)</li>
@@ -183,7 +136,7 @@
                     <div class="step-number">3</div>
                     <div class="step-icon"><i class="fas fa-credit-card"></i></div>
                     <h3>Оплатите</h3>
-                    <p>Перейдите на страницу ЮMoney</p>
+                    <p>Вас перенаправит на ЮMoney</p>
                 </div>
                 <div class="step">
                     <div class="step-number">4</div>
@@ -195,7 +148,7 @@
         </div>
     </section>
 
-    <!-- Модальное окно покупки -->
+    <!-- Модальное окно -->
     <div class="modal-overlay" id="purchaseModal">
         <div class="modal">
             <button class="modal-close" id="closeModal">&times;</button>
@@ -208,146 +161,33 @@
                 </div>
             </div>
 
-            <!-- Шаг 1: Ввод Telegram -->
-            <div class="modal-step active" id="step1">
-                <div class="step-content">
-                    <div class="form-group">
-                        <label><i class="fab fa-telegram"></i> Ваш Telegram @username</label>
-                        <div class="input-with-prefix">
-                            <span class="prefix">@</span>
-                            <input type="text" id="telegramUsername" placeholder="username" maxlength="32">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><i class="fab fa-telegram"></i> Ваш Telegram @username</label>
+                    <div class="input-with-prefix">
+                        <span class="prefix">@</span>
+                        <input type="text" id="telegramUsername" placeholder="username" maxlength="32" autocomplete="off">
+                    </div>
+                    <small>Без @, только английские буквы, цифры и _</small>
+                </div>
+                
+                <div class="payment-info">
+                    <div class="info-card">
+                        <i class="fas fa-external-link-alt"></i>
+                        <div>
+                            <h4>Вы будете перенаправлены на страницу оплаты</h4>
+                            <p>После ввода username вы автоматически перейдете на безопасную страницу ЮMoney для оплаты.</p>
                         </div>
-                        <small>Без @, только английские буквы, цифры и _</small>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label><i class="fas fa-envelope"></i> Email для чека (необязательно)</label>
-                        <input type="email" id="userEmail" placeholder="email@example.com">
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn-secondary" id="cancelBtn">Отмена</button>
-                        <button class="btn-primary" id="nextStepBtn">Далее →</button>
                     </div>
                 </div>
-            </div>
-
-            <!-- Шаг 2: Оплата -->
-            <div class="modal-step" id="step2">
-                <div class="step-content">
-                    <div class="payment-info">
-                        <div class="info-row">
-                            <span>Получатель:</span>
-                            <code class="copy-target" data-text="4100119450984155">
-                                4100 1194 5098 4155
-                                <button class="copy-btn"><i class="far fa-copy"></i></button>
-                            </code>
-                        </div>
-                        <div class="info-row">
-                            <span>Сумма:</span>
-                            <strong id="paymentAmount">120 ₽</strong>
-                        </div>
-                        <div class="info-row">
-                            <span>Комментарий:</span>
-                            <code class="copy-target" id="paymentComment" data-text="">
-                                <span id="commentText">Генерация...</span>
-                                <button class="copy-btn"><i class="far fa-copy"></i></button>
-                            </code>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-instructions">
-                        <h4><i class="fas fa-external-link-alt"></i> Инструкция по оплате:</h4>
-                        <ol>
-                            <li>Нажмите кнопку "Перейти к оплате" ниже</li>
-                            <li>В открывшемся окне ЮMoney совершите оплату</li>
-                            <li>Вернитесь на эту страницу</li>
-                            <li>Нажмите "Я оплатил"</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn-secondary" id="backStepBtn">← Назад</button>
-                        <button class="btn-primary" id="goToPaymentBtn">
-                            <i class="fas fa-external-link-alt"></i> Перейти к оплате
-                        </button>
-                    </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="cancelBtn">Отмена</button>
+                    <button class="btn-primary" id="submitBtn">
+                        <i class="fas fa-arrow-right"></i> Перейти к оплате
+                    </button>
                 </div>
             </div>
-
-            <!-- Шаг 3: Подтверждение -->
-            <div class="modal-step" id="step3">
-                <div class="step-content">
-                    <div class="payment-instructions">
-                        <h4><i class="fas fa-external-link-alt"></i> Ожидание оплаты</h4>
-                        <p>Открыта страница оплаты ЮMoney. Завершите оплату и вернитесь на эту страницу.</p>
-                        
-                        <div class="payment-timer">
-                            <i class="fas fa-clock"></i>
-                            <span>Время на оплату: <strong id="paymentTimer">05:00</strong></span>
-                        </div>
-                        
-                        <div class="payment-details-card">
-                            <div class="detail">
-                                <span>Тариф:</span>
-                                <strong id="finalPlanName">Premium</strong>
-                            </div>
-                            <div class="detail">
-                                <span>Для пользователя:</span>
-                                <strong id="finalUsername">@username</strong>
-                            </div>
-                            <div class="detail">
-                                <span>ID транзакции:</span>
-                                <code id="finalPaymentId">FELIX_123456</code>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn-secondary" id="cancelPaymentBtn">Отмена</button>
-                        <button class="btn-primary" id="confirmPaymentBtn">
-                            <i class="fas fa-check"></i> Я оплатил
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно успеха -->
-    <div class="modal-overlay" id="successModal">
-        <div class="modal success-modal">
-            <div class="success-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h3>Запрос принят!</h3>
-            <p id="successMessage">
-                Мы получили ваш запрос на выдачу статуса <strong>Premium</strong> 
-                для пользователя <strong>@username</strong>.
-            </p>
-            
-            <div class="status-check">
-                <div class="loader"></div>
-                <p id="statusText">Проверяем платеж...</p>
-            </div>
-            
-            <div class="payment-info-card">
-                <div class="info-row">
-                    <span>ID транзакции:</span>
-                    <code id="successPaymentId">FELIX_123456</code>
-                </div>
-                <div class="info-row">
-                    <span>Дата:</span>
-                    <span id="paymentDate">...</span>
-                </div>
-            </div>
-            
-            <div class="support-info">
-                <i class="fas fa-info-circle"></i>
-                <p>Если статус не выдан в течение 10 минут, напишите в поддержку с ID транзакции.</p>
-            </div>
-            
-            <button class="btn-primary" id="closeSuccessModal">Закрыть</button>
         </div>
     </div>
 
@@ -360,9 +200,8 @@
                     <span class="logo-text">FelixShop</span>
                 </div>
                 <div class="footer-links">
-                    <a href="privacy.html"><i class="fas fa-shield-alt"></i> Политика конфиденциальности</a>
+                    <a href="privacy.html"><i class="fas fa-shield-alt"></i> Политика</a>
                     <a href="https://t.me/FelixShopSupport" target="_blank"><i class="fab fa-telegram"></i> Поддержка</a>
-                    <a href="#" onclick="showRefundPolicy()"><i class="fas fa-exchange-alt"></i> Возвраты</a>
                 </div>
                 <div class="footer-info">
                     <p>© 2024 FelixShop. Все права защищены.</p>
