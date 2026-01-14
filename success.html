@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оплата успешна - FelixShop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0066ff 0%, #00b8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .success-container {
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .success-icon {
+            font-size: 80px;
+            color: #4cd964;
+            margin-bottom: 20px;
+            animation: bounce 1s ease;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #1a1a2e;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .order-info {
+            background: #f8faff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e6f0ff;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #e6ffe6;
+            color: #2e7d32;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #0066ff 0%, #00b8ff 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 102, 255, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #0066ff;
+            border: 2px solid #0066ff;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8faff;
+        }
+        
+        .support-info {
+            margin-top: 30px;
+            padding: 15px;
+            background: #e6f7ff;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+        
+        .support-info a {
+            color: #0066ff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 768px) {
+            .success-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        
+        <h1>Оплата успешно принята!</h1>
+        <p>Мы получили ваш платеж. Статус будет выдан в течение 5 минут.</p>
+        
+        <div class="status-badge">
+            <i class="fas fa-clock"></i> Ожидание выдачи статуса
+        </div>
+        
+        <div class="order-info">
+            <div class="info-row">
+                <span>Заказ:</span>
+                <strong id="orderPlan">Premium</strong>
+            </div>
+            <div class="info-row">
+                <span>Сумма:</span>
+                <strong id="orderAmount">120 ₽</strong>
+            </div>
+            <div class="info-row">
+                <span>ID транзакции:</span>
+                <code id="orderId">FELIX_123456</code>
+            </div>
+            <div class="info-row">
+                <span>Дата:</span>
+                <span id="orderDate">15.12.2024 14:30</span>
+            </div>
+        </div>
+        
+        <div class="support-info">
+            <i class="fas fa-info-circle"></i>
+            <p>Если статус не выдан в течение 10 минут, напишите в 
+            <a href="https://t.me/FelixShopSupport" target="_blank">поддержку</a> 
+            с ID транзакции.</p>
+        </div>
+        
+        <div class="buttons">
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home"></i> Вернуться в магазин
+            </a>
+            <a href="https://t.me/FelixShopSupport" target="_blank" class="btn btn-secondary">
+                <i class="fab fa-telegram"></i> Написать в поддержку
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Получаем данные из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Заполняем информацию
+        document.getElementById('orderPlan').textContent = 
+            urlParams.get('plan') || 'Premium';
+        document.getElementById('orderAmount').textContent = 
+            urlParams.get('amount') || '120 ₽';
+        document.getElementById('orderId').textContent = 
+            urlParams.get('id') || 'FELIX_' + Date.now().toString(36);
+        document.getElementById('orderDate').textContent = 
+            new Date().toLocaleDateString('ru-RU') + ' ' + 
+            new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+    </script>
+</body>
+</html>
